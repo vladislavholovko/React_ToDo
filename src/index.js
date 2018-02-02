@@ -16,28 +16,25 @@ class ListTask extends React.Component {
         this.createTask = this.createTask.bind(this);
         this.removeTask = this.removeTask.bind(this);
         this.upTask = this.upTask.bind(this);
-        // this.taskSearch = this.taskSearch.bind(this);
+        this.taskSearch = this.taskSearch.bind(this);
     };
 //Search ===================================
-//     taskSearch (e) {
-//         let sValue = e.target.value;
-//         let newList = this.state.list;
-//         let sList = newList.filter(function (value) {
-//            let mTitle = value.title;
-//            let search = mTitle.indexOf(sValue) !== -1;
-//            return search;
-//         });
-//         this.setState({search: sList});
-//         if (document.getElementById("text-search").value === "")
-//         {
-//             console.log("Пустінько");
-//             this.setState({list:newList});
-//         } else {
-//             console.log("Щось є");
-//            return this.setState({list: this.state.search});
-//         }
-//  }
-//
+    taskSearch (e) {
+        var sValue = e.target.value;
+        let newList = this.state.list;
+        let sList = newList.filter(function (value) {
+           let mTitle = value.title;
+           return mTitle.indexOf(sValue) !== -1;
+        });
+
+        if (sValue === "") {
+            this.setState({search: []});
+        } else
+            {
+            this.setState({search: sList});
+            }
+    }
+
 
 
 //Create new Task ==========================
@@ -105,6 +102,7 @@ class ListTask extends React.Component {
 
 
     render () {
+
         let listView=this.state.list.map((value,index)=>{
             return(
                 <li key={index} index={index} className="todo-item list-group-item m-1 rounded justify-content-around">
@@ -117,12 +115,24 @@ class ListTask extends React.Component {
             )
         });
 
+
+        let sView=this.state.search.map((value,index)=>{
+            return(
+                <li key={index} index={index} className="todo-item list-group-item m-1 rounded justify-content-around">
+                    <label className="title mr-2 col-9">{value.title}</label>
+                    <label className="mr-2 col-1">{ value.time}</label>
+                    <button className="delete mr-2 col-1" onClick={()=>this.removeTask(index)}>&#x2718;</button>
+                </li>
+            )
+        });
+
+
         return (
             <div>
                 <nav className="navbar bg-dark font-italic" style={{borderWidth: 2, borderColor:'#2A2A2A'}}>
                     <a href="" className="nav-brand  text-danger  h1 ">To Do... </a>
                     <form className="form-inline">
-                        <input id="text-search" className="form-control mr-2" type="search" placeholder="Пошук задачі" aria-label="Search"/>
+                        <input id="text-search" className="form-control mr-2" type="search" placeholder="Пошук задачі" aria-label="Search" onChange={(e)=> this.taskSearch(e)} />
                     </form>
                 </nav>
                 <div>
@@ -135,7 +145,8 @@ class ListTask extends React.Component {
                         </form>
                     </div>
                     <ul id="todo-list" className="list-group p-2 font-italic" >
-                        {listView}
+                        {this.state.search.length === 0 ? listView : sView }
+                        {this.state.search.length === 0 ? console.log("Нічого немає") : console.log("Щось є")}
                     </ul>
                 </div>
             </div>
