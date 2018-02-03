@@ -17,6 +17,7 @@ class ListTask extends React.Component {
         this.removeTask = this.removeTask.bind(this);
         this.upTask = this.upTask.bind(this);
         this.taskSearch = this.taskSearch.bind(this);
+        this.removeTaskSearch = this.removeTaskSearch.bind(this);
     };
 //Search ===================================
     taskSearch (e) {
@@ -62,14 +63,6 @@ class ListTask extends React.Component {
         });
     };
 
-//Delete Task ==============================
-    removeTask (index) {
-      let newList = this.state.list;
-      newList.splice(index,1);
-      this.setState({list:newList});
-      localStorage.setItem('task', JSON.stringify(this.state.list));
-    };
-
 //Move up ==================================
     upTask(index) {
         let newList = this.state.list;
@@ -100,6 +93,30 @@ class ListTask extends React.Component {
         }
     };
 
+    //Delete Task ==============================
+    removeTask (index) {
+        let newList = this.state.list;
+        newList.splice(index,1);
+        this.setState({list:newList});
+        localStorage.setItem('task', JSON.stringify(this.state.list));
+    };
+
+
+
+    removeTaskSearch (index) {
+        let newList = this.state.list;
+        for (let i=0; i<this.state.list.length; i++){
+            if (this.state.list[i] === index) {
+                let index = newList.indexOf(this.state.list[i]);
+                newList.splice(index,1);
+                this.setState({search: []})
+                document.getElementById("text-search").value = null;
+                this.setState({list:newList});
+                localStorage.setItem('task', JSON.stringify(this.state.list));
+            }
+        }
+    };
+
 
     render () {
 
@@ -121,7 +138,7 @@ class ListTask extends React.Component {
                 <li key={index} index={index} className="todo-item list-group-item m-1 rounded justify-content-around">
                     <label className="title mr-2 col-9">{value.title}</label>
                     <label className="mr-2 col-1">{ value.time}</label>
-                    <button className="delete mr-2 col-1" onClick={()=>this.removeTask(index)}>&#x2718;</button>
+                    <button className="delete mr-2 col-1" onClick={()=>this.removeTaskSearch(value)}>&#x2718;</button>
                 </li>
             )
         });
@@ -146,7 +163,6 @@ class ListTask extends React.Component {
                     </div>
                     <ul id="todo-list" className="list-group p-2 font-italic" >
                         {this.state.search.length === 0 ? listView : sView }
-                        {this.state.search.length === 0 ? console.log("Нічого немає") : console.log("Щось є")}
                     </ul>
                 </div>
             </div>
